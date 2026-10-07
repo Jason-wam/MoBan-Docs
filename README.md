@@ -14,14 +14,14 @@
 2. **书源搜书** —— 添加书源后直接在线搜索、换源
 3. **局域网传输** —— 电脑浏览器访问同一 Wi-Fi 下的网页端拖拽上传
 
-<p align="center">
-  <img src="images/25-import-menu.webp" width="280" alt="导入菜单">
-</p>
+| 导入菜单 |
+|:---:|
+| <img src="images/25-import-menu.webp" width="240" alt="导入菜单"> |
 
 ## 主界面导览
 
 | 书架 | 分类 | 统计 | 我的 |
-|---|---|---|---|
+|:---:|:---:|:---:|:---:|
 | ![书架](images/01-shelf.webp) | ![分类](images/02-category.webp) | ![统计](images/03-stats.webp) | ![我的](images/04-my.webp) |
 
 ## 阅读体验
@@ -30,33 +30,26 @@
 - **排版与主题**：字体、字号、行距、缩进自由调节，多套配色 + 深色模式
 
 | 阅读页 | 阅读菜单 | 翻页动画 | 主题 |
-|---|---|---|---|
+|:---:|:---:|:---:|:---:|
 | ![阅读页](images/13-read.webp) | ![阅读菜单](images/15-read-menu.webp) | ![翻页动画](images/21-animation.webp) | ![主题](images/23-theme.webp) |
 
-## AI 智能助手
+## AI 智能助手 · 语音朗读
 
-支持配置任意兼容接口（密钥统一在「密钥管理」归集）：
+支持配置任意兼容接口（密钥统一在「密钥管理」归集），AI 伴读与在线大模型朗读双引擎：
 
 | 功能 | 说明 |
-|---|---|
+|:---|:---|
 | 章节总结 / 全书速读 | 快速了解剧情脉络 |
 | 人物关系 | 自动整理角色关系图 |
 | 角色配音 | 结合 TTS 朗读的角色化语音 |
 | 阅读问答 / 划词问 AI | 选中文字直接提问 |
 | 生成画面 | 文生图，为段落配图 |
 | 排版优化 / 内容净化 | 修正错字、去除广告水印 |
+| 语音朗读 | 系统 TTS / 在线大模型双引擎，语速音色可调 |
 
-<p align="center">
-  <img src="images/19-ai-panel.webp" width="280" alt="AI 面板">
-</p>
-
-## 语音朗读
-
-内置系统 TTS 与在线大模型朗读双引擎，支持语速、音色、定时关闭、后台播放。
-
-<p align="center">
-  <img src="images/17-tts.webp" width="280" alt="朗读">
-</p>
+| AI 面板 | 朗读面板 |
+|:---:|:---:|
+| <img src="images/19-ai-panel.webp" width="240" alt="AI 面板"> | <img src="images/17-tts.webp" width="240" alt="朗读面板"> |
 
 ## 划线 · 笔记 · 词典
 
@@ -71,9 +64,9 @@
 - **AI 书源识别**：粘贴小说页面链接，AI 自动生成书源规则
 - **插件**：扩展在线内容解析能力
 
-<p align="center">
-  <img src="images/06-sources.webp" width="280" alt="书源">
-</p>
+| 书源管理 |
+|:---:|
+| <img src="images/06-sources.webp" width="240" alt="书源"> |
 
 ## 创作教程
 
