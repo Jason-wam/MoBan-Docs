@@ -14,7 +14,9 @@
 2. **书源搜书** —— 添加书源后直接在线搜索、换源
 3. **局域网传输** —— 电脑浏览器访问同一 Wi-Fi 下的网页端拖拽上传
 
-![导入菜单](images/25-import-menu.webp)
+<p align="center">
+  <img src="images/25-import-menu.webp" width="280" alt="导入菜单">
+</p>
 
 ## 主界面导览
 
@@ -44,13 +46,17 @@
 | 生成画面 | 文生图，为段落配图 |
 | 排版优化 / 内容净化 | 修正错字、去除广告水印 |
 
-![AI 面板](images/19-ai-panel.webp)
+<p align="center">
+  <img src="images/19-ai-panel.webp" width="280" alt="AI 面板">
+</p>
 
 ## 语音朗读
 
 内置系统 TTS 与在线大模型朗读双引擎，支持语速、音色、定时关闭、后台播放。
 
-![朗读](images/17-tts.webp)
+<p align="center">
+  <img src="images/17-tts.webp" width="280" alt="朗读">
+</p>
 
 ## 划线 · 笔记 · 词典
 
@@ -65,7 +71,9 @@
 - **AI 书源识别**：粘贴小说页面链接，AI 自动生成书源规则
 - **插件**：扩展在线内容解析能力
 
-![书源](images/06-sources.webp)
+<p align="center">
+  <img src="images/06-sources.webp" width="280" alt="书源">
+</p>
 
 ## 创作教程
 
