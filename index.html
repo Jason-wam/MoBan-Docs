@@ -1,326 +1,511 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>墨伴 · 使用说明</title>
+<title>墨伴 · 一站式 Android 阅读体验</title>
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
   :root {
-    --bg: #f6f7f9;
+    --bg: #ffffff; --bg-alt: #f8f9fa;
     --card: #ffffff;
-    --text: #2b2f33;
-    --text-sub: #6b7280;
-    --primary: #3B6939;
-    --primary-deep: #2d522c;
-    --highlight: #a8dca2;
-    --danger: #c0504d;
-    --border: #e5e7eb;
-    --shadow: 0 2px 10px rgba(0,0,0,.06);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #15181b;
-      --card: #1f2428;
-      --text: #e5e7eb;
-      --text-sub: #9ca3af;
-      --primary: #6fae6c;
-      --primary-deep: #5a9457;
-      --highlight: #2f4a2e;
-      --border: #33383d;
-      --shadow: 0 2px 12px rgba(0,0,0,.4);
-    }
+    --text: #1f2937; --text-sub: #6b7280; --text-muted: #9ca3af;
+    --primary: #3B6939; --primary-hover: #2d522c;
+    --border: #e5e7eb; --divider: rgba(0,0,0,.06);
+    --hero-g1: #e8f5e9; --hero-g2: #c8e6c9;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.06);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.08);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-    line-height: 1.7;
+    background: var(--bg); color: var(--text);
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
   }
+  a { color: inherit; text-decoration: none; }
+
   /* ===== 顶栏 ===== */
-  header.topbar {
-    position: sticky; top: 0; z-index: 10;
-    height: 52px;
-    background: var(--card);
-    box-shadow: var(--shadow);
-    display: flex; align-items: center; padding: 0 20px; gap: 10px;
+  .nav {
+    position: sticky; top: 0; z-index: 50; height: 56px;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--divider);
+    display: flex; align-items: center;
   }
-  header.topbar .logo { font-size: 20px; font-weight: 700; color: var(--primary); letter-spacing: 1px; }
-  header.topbar .sub { color: var(--text-sub); font-size: 13px; }
+  .nav-inner {
+    max-width: 1120px; width: 100%; margin: 0 auto; padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 600; }
+  .brand-dot {
+    width: 28px; height: 28px; border-radius: 8px;
+    object-fit: cover; display: block;
+    border: 0.8px solid rgba(59,105,57,.2);
+    box-shadow: 0 0px 0px rgba(0,0,0,.08);
+  }
+  .nav-links { display: flex; gap: 24px; align-items: center; font-size: 14px; }
+  .nav-links a { color: var(--text-sub); transition: color .2s; }
+  .nav-links a:hover { color: var(--primary); }
+  .nav-links .gh-icon { font-size: 18px; }
+
   /* ===== Hero ===== */
-  .hero { max-width: 1080px; margin: 28px auto 0; padding: 0 20px; }
-  .hero-card {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
-    color: #fff; border-radius: 12px; padding: 40px 36px; box-shadow: var(--shadow);
+  .accent { color: var(--primary); }
+  .hero-wrap { border-bottom: 1px solid var(--divider); }
+  .hero {
+    max-width: 1120px; margin: 0 auto; padding: 72px 24px 56px;
+    display: grid; grid-template-columns: 1fr auto; gap: 64px; align-items: center;
   }
-  .hero-card h1 { font-size: 30px; margin-bottom: 10px; }
-  .hero-card p { opacity: .92; max-width: 720px; }
-  .badges { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 8px; }
-  .badge {
-    background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.25);
-    padding: 3px 12px; border-radius: 8px; font-size: 12.5px;
+  .hero-tagline {
+    font-size: 14px; color: var(--text-sub); margin-bottom: 12px;
+    display: inline-flex; align-items: center; gap: 8px;
   }
-  /* ===== 布局 ===== */
-  main { max-width: 1080px; margin: 0 auto; padding: 8px 20px 60px; }
-  section { margin-top: 40px; }
-  h2 {
-    font-size: 22px; margin-bottom: 6px; padding-left: 12px;
-    border-left: 4px solid var(--primary);
+  .hero-tagline::before { content: ""; width: 20px; height: 1px; background: var(--primary); }
+  .hero h1 { font-size: clamp(30px, 5vw, 46px); font-weight: 700; line-height: 1.15; margin-bottom: 0px; letter-spacing: -.02em; }
+  .hero h1 .accent { color: var(--primary); }
+  .hero-desc { font-size: 16px; color: var(--text-sub); max-width: 540px; margin-bottom: 8px; line-height: 1.7; }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+  .btn-primary {
+    position: relative;
+    background: var(--primary); color: #fff; border: none;
+    padding: 12px 28px; border-radius: 50px; font-size: 14px; font-weight: 500;
+    cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .5rem;
+    box-shadow: 0 2px 8px rgba(59,105,57,.25);
+    transition: background .2s, transform .2s, box-shadow .2s;
   }
-  h2 .en { font-size: 13px; color: var(--text-sub); font-weight: 400; margin-left: 8px; }
-  .sec-desc { color: var(--text-sub); margin: 0 0 16px 16px; font-size: 14px; }
-  /* ===== 功能卡片网格 ===== */
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
-  .feature {
-    background: var(--card); border-radius: 12px; padding: 20px;
-    box-shadow: var(--shadow); border: 1px solid transparent;
-    transition: border-color .2s, transform .2s;
+  .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 0px 0px rgba(59,105,57,.35); color: #fff; }
+  /* 二维码悬浮弹层 */
+  .qr-popover {
+    position: absolute; bottom: calc(100% + 14px); left: 50%; transform: translateX(-50%);
+    background: #fff; border-radius: 12px; padding: 10px;
+    box-shadow: 0 8px 28px rgba(0,0,0,.18); border: 1px solid var(--border);
+    opacity: 0; visibility: hidden;
+    transition: opacity .18s ease, transform .18s ease, visibility .18s;
+    pointer-events: none; z-index: 20;
+    text-align: center;
+    white-space: nowrap;
   }
-  .feature:hover { border-color: var(--highlight); transform: translateY(-2px); }
-  a.feature { display: block; color: inherit; text-decoration: none; }
-  .feature h3 .arrow { float: right; color: var(--text-sub); font-weight: 400; }
-  .feature h3 { font-size: 16px; color: var(--primary); margin-bottom: 6px; }
-  .feature p { font-size: 13.5px; color: var(--text-sub); }
-  .feature .tag {
-    display: inline-block; font-size: 11px; color: var(--primary);
-    background: var(--highlight); border-radius: 10px; padding: 1px 9px; margin-bottom: 8px;
+  .qr-popover img { width: 110px; height: 110px; display: block; border-radius: 6px; }
+  .qr-popover .tip { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+  .qr-popover::after {
+    content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border-width: 6px 7px 0; border-style: solid;
+    border-color: var(--border) transparent transparent;
   }
-  /* ===== 截图画廊 ===== */
-  .shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
-  .shot {
-    background: var(--card); border-radius: 12px; overflow: hidden;
-    box-shadow: var(--shadow); transition: transform .2s;
+  .qr-popover::before {
+    content: ""; position: absolute; top: calc(100% + 1px); left: 50%; transform: translateX(-50%);
+    border-width: 5px 6px 0; border-style: solid;
+    border-color: #fff transparent transparent;
   }
-  .shot:hover { transform: translateY(-3px); }
-  .shot img { width: 100%; display: block; border-bottom: 1px solid var(--border); }
-  .shot .cap { padding: 10px 14px; font-size: 13px; }
-  .shot .cap b { color: var(--primary); display: block; margin-bottom: 2px; }
-  .shot .cap span { color: var(--text-sub); font-size: 12px; }
-  /* ===== 列表 ===== */
-  ul.feat-list { list-style: none; margin-left: 16px; }
-  ul.feat-list li {
-    background: var(--card); border-radius: 10px; padding: 10px 16px; margin-bottom: 8px;
-    box-shadow: var(--shadow); font-size: 14px;
+  .btn-primary:hover .qr-popover, .btn-primary:focus .qr-popover {
+    opacity: 1; visibility: visible; transform: translateX(-50%) translateY(-2px);
   }
-  ul.feat-list li b { color: var(--primary); }
-  ul.feat-list li span { color: var(--text-sub); }
-  /* ===== 步骤 ===== */
-  .steps { counter-reset: step; margin-left: 16px; }
-  .step {
-    position: relative; background: var(--card); border-radius: 10px;
-    padding: 12px 16px 12px 52px; margin-bottom: 10px; box-shadow: var(--shadow); font-size: 14px;
+  .btn-secondary {
+    background: #fff; color: var(--text); border: 1px solid var(--border);
+    padding: 11px 24px; border-radius: 50px; font-size: 14px; font-weight: 500;
+    cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: .5rem;
+    transition: background .2s, border-color .2s, transform .2s;
   }
+  .btn-secondary:hover { background: var(--bg-alt); border-color: var(--primary); transform: translateY(-1px); }
+  .hero-meta { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* Hero 右侧 */
+  .hero-visual { position: relative; width: 260px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; }
+  .hero-icon { width: 120px; height: 120px; border-radius: 28px; background: #fff; overflow: hidden; box-shadow: 0 0px 10px rgba(0,0,0,.12); border: 1px solid #e0e4e8; }
+  .hero-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ===== Section 通用 ===== */
+  .section { padding: 72px 24px; }
+  .section-alt { background: var(--bg-alt); }
+  .section-inner { max-width: 1120px; margin: 0 auto; }
+  .section-head { text-align: center; margin-bottom: 44px; }
+  .section-head h2 { font-size: clamp(22px, 3vw, 28px); font-weight: 700; margin-bottom: 8px; letter-spacing: -.01em; }
+  .section-head p { color: var(--text-sub); font-size: 15px; }
+
+  /* ===== 核心功能 ===== */
+  .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; }
+  .feature-card { background: #fff; border-radius: 14px; padding: 26px; border: 1px solid var(--border); transition: transform .2s, box-shadow .2s, border-color .2s; }
+  .feature-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: rgba(59,105,57,.3); }
+  .feature-icon { width: 44px; height: 44px; border-radius: 11px; background: rgba(59,105,57,.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 14px; }
+  .feature-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 5px; }
+  .feature-card p { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+
+  /* ===== 为什么选择 ===== */
+  .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+  .why-item { display: flex; gap: 14px; padding: 20px; }
+  .why-icon { width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0; background: rgba(59,105,57,.08); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+  .why-item h3 { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .why-item p { font-size: 12.5px; color: var(--text-sub); }
+
+  /* ===== 截图 ===== */
+  .shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+  .shot { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); transition: transform .2s, box-shadow .2s; }
+  .shot:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .shot img { width: 100%; display: block; }
+  .shot .cap { padding: 10px 14px; font-size: 12.5px; }
+  .shot .cap b { display: block; font-weight: 600; margin-bottom: 2px; }
+  .shot .cap span { color: var(--text-muted); font-size: 11.5px; }
+
+  /* ===== 快速开始 ===== */
+  .steps { counter-reset: step; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+  .step { position: relative; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 20px 20px 20px 56px; }
   .step::before {
     counter-increment: step; content: counter(step);
-    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    position: absolute; left: 18px; top: 20px;
     width: 26px; height: 26px; border-radius: 50%;
     background: var(--primary); color: #fff;
-    display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
   }
-  .step span { color: var(--text-sub); }
-  table.tech {
-    width: 100%; border-collapse: collapse; background: var(--card);
-    border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); font-size: 13.5px;
+  .step h3 { font-size: 14.5px; font-weight: 600; margin-bottom: 4px; }
+  .step p { font-size: 12.5px; color: var(--text-sub); line-height: 1.6; }
+
+  /* ===== 教程 ===== */
+  .links-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 14px; }
+  .link-card { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 22px; display: flex; gap: 14px; align-items: center; transition: border-color .2s, transform .2s, box-shadow .2s; }
+  .link-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .link-icon { width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0; background: rgba(59,105,57,.1); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 17px; }
+  .link-card h3 { font-size: 14.5px; font-weight: 600; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
+  .link-card h3 .arrow { font-size: 11px; color: var(--text-muted); font-weight: 400; }
+  .link-card p { font-size: 12.5px; color: var(--text-sub); }
+
+  /* ===== CTA ===== */
+  .cta { text-align: center; padding: 72px 24px; background: linear-gradient(135deg, rgba(59,105,57,.03), rgba(59,105,57,.07)); border-top: 1px solid var(--divider); }
+  .cta h2 { font-size: clamp(20px, 2.5vw, 26px); font-weight: 700; margin-bottom: 8px; }
+  .cta p { color: var(--text-sub); margin-bottom: 24px; font-size: 15px; }
+
+  /* ===== Footer ===== */
+  footer { padding: 24px; border-top: 1px solid var(--divider); text-align: center; font-size: 12.5px; color: var(--text-muted); }
+  footer a { color: var(--text-sub); transition: color .2s; }
+  footer a:hover { color: var(--primary); }
+
+  /* ===== 提示层 ===== */
+  .tip-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.72); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .tip-overlay.show { display: flex; }
+  .tip-box { background: #fff; border-radius: 16px; padding: 32px; max-width: 360px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,.3); }
+  .tip-box .icon { font-size: 40px; margin-bottom: 10px; }
+  .tip-box h3 { font-size: 15px; margin-bottom: 10px; color: #c0504d; }
+  .tip-box p { font-size: 13px; color: var(--text-sub); margin-bottom: 16px; line-height: 1.6; }
+  .tip-box button { background: var(--primary); color: #fff; border: none; padding: 9px 26px; border-radius: 50px; font-size: 14px; cursor: pointer; font-weight: 500; }
+  .tip-box button:hover { background: var(--primary-hover); }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: 36px; padding: 48px 24px 40px; }
+    .hero-visual { margin: 0 auto; }
+    .hero-icon { width: 96px; height: 96px; }
+    .section { padding: 52px 24px; }
   }
-  table.tech th, table.tech td { padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--border); }
-  table.tech th { background: var(--highlight); color: var(--primary-deep); }
-  footer { text-align: center; color: var(--text-sub); font-size: 12.5px; padding: 24px 0 40px; }
-  footer a { color: var(--primary); text-decoration: none; }
+  @media (max-width: 640px) {
+    .nav-links .nav-text { display: none; }
+    .hero-actions { flex-direction: column; align-items: stretch; }
+    .hero-actions a { justify-content: center; }
+  }
 </style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="logo">墨伴</div>
-  <div class="sub">本地 / 在线一体化阅读器 · 使用说明</div>
-</header>
+<!-- 顶栏 -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#">
+      <img  class="brand-dot" src="images/ic_launcher.webp" alt="墨伴">
+      <span>墨伴</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-text" href="#features">核心功能</a>
+      <a class="nav-text" href="#why">为什么选择</a>
+      <a class="nav-text" href="#shots">截图</a>
+      <a class="gh-icon" href="https://github.com/Jason-wam/MoBan-Docs" target="_blank" rel="noopener" title="GitHub"><i class="fab fa-github"></i></a>
+    </div>
+  </div>
+</nav>
 
-<div class="hero">
-  <div class="hero-card">
-    <h1>墨伴</h1>
-    <p>一款基于 Kotlin + Jetpack Compose 打造的 Android 阅读器：本地书籍（TXT / EPUB / MOBI / AZW3 / FB2 / FB3 / CBZ / CBR / CB7）与在线书源一体，内置多模式翻页、AI 智能助手、大模型朗读、词典笔记、阅读统计与局域网 Web 端，全部数据本地存储。</p>
-    <div class="badges">
-      <span class="badge">Kotlin</span>
-      <span class="badge">Jetpack Compose</span>
-      <span class="badge">Room 数据库</span>
-      <span class="badge">MMKV 偏好</span>
-      <span class="badge">AI (OpenAI 兼容)</span>
-      <span class="badge">局域网 Web 端</span>
-      <span class="badge">纯本地存储 · 无账号</span>
+<!-- Hero -->
+<div class="hero-wrap">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-tagline">Android 原生阅读器 · 纯本地存储</div>
+      <h1>墨伴</h1>
+      <h2><span class="accent">一站式阅读体验</span></h2>
+      <p class="hero-desc">
+        基于 Kotlin + Jetpack Compose 打造，本地书籍与在线书源一体，内置 AI 智能助手、大模型朗读、词典笔记、阅读统计与局域网 Web 端，全部数据留在设备。
+      </p>
+      <div class="hero-meta" id="downloadMeta" style="display:none;">
+        <span id="dlTag">v?</span>
+        <span>·</span>
+        <span id="dlSize">—</span>
+        <span>·</span>
+        <span id="dlDate">—</span>
+      </div>
+      <div class="hero-actions" id="downloadCard" style="display:none;">
+        <a class="btn-primary" id="dlBtn" href="#" target="_blank" rel="noopener">
+          <i class="fas fa-download"></i> 下载安装
+          <span class="qr-popover"><img id="dlQrImg" alt="扫码安装"><span class="tip">手机扫码直接下载</span></span>
+        </a>
+        <a class="btn-secondary" id="dlRelease" href="#" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub Release</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-icon"><img src="images/ic_launcher.webp" alt="墨伴"></div>
     </div>
   </div>
 </div>
 
-<main>
+<!-- 核心功能 -->
+<section class="section" id="features">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2>核心功能</h2>
+      <p>覆盖阅读场景的完整能力矩阵</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-book"></i></div>
+        <h3>多格式书籍</h3>
+        <p>支持 TXT / EPUB / MOBI / AZW3 / FB2 / FB3 等主流格式，本地导入直接阅读。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-robot"></i></div>
+        <h3>AI 智能助手</h3>
+        <p>章节总结、人物关系、阅读问答、陪读感想。兼容任意 OpenAI 格式接口。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-headphones-alt"></i></div>
+        <h3>语音朗读</h3>
+        <p>系统 TTS 与大模型朗读双引擎，进度拖动、段落高亮跟随。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-image"></i></div>
+        <h3>漫画阅读</h3>
+        <p>独立漫画阅读模式，支持 CBZ / CBR / CB7，图片缩放手势。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-globe"></i></div>
+        <h3>在线书源</h3>
+        <p>多源并发搜索、分类排行浏览，AI 辅助识别生成书源规则。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-pen-fancy"></i></div>
+        <h3>划线 · 笔记 · 词典</h3>
+        <p>拖动式选择、划线批注、点按查词，划词直接问 AI。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+        <h3>阅读统计</h3>
+        <p>今日阅读曲线、本周/本月时长，停留无操作自动暂停计时。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-network-wired"></i></div>
+        <h3>局域网 Web 端</h3>
+        <p>电脑浏览器打开手机地址，在线阅读、上传书籍与字体，进度与 App 同步。</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <!-- ============ 快速开始 ============ -->
-  <section>
-    <h2>快速开始<span class="en">Quick Start</span></h2>
-    <p class="sec-desc">三种方式把书装进书架：</p>
+<!-- 为什么选择 -->
+<section class="section section-alt" id="why">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2>为什么选择墨伴</h2>
+      <p>原生打造，数据自主</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="why-icon"><i class="fab fa-android"></i></div>
+        <div><h3>Kotlin + Compose 原生</h3><p>Android 原生框架，流畅自然的交互体验。</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon"><i class="fas fa-lock"></i></div>
+        <div><h3>纯本地存储 · 无账号</h3><p>Room 数据库 + MMKV，全部数据留在设备。</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon"><i class="fas fa-plug"></i></div>
+        <div><h3>多数据源聚合</h3><p>本地、在线书源、WebDAV、OPDS 统一管理。</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon"><i class="fas fa-keyboard"></i></div>
+        <div><h3>开放式插件</h3><p>书源规则语法、插件接口，支持自定义扩展。</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon"><i class="fas fa-font"></i></div>
+        <div><h3>六种翻页动画</h3><p>滑盖、交互、仿真、平滑等，三页流水线连续交互。</p></div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon"><i class="fas fa-hand-holding-water"></i></div>
+        <div><h3>贴心小功能</h3><p>单手模式、简繁互转、音量键翻页、生僻字注音。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 截图 -->
+<section class="section" id="shots">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2>应用截图</h2>
+      <p>真机实拍，原汁原味</p>
+    </div>
+    <div class="shots">
+      <div class="shot"><img src="images/01-shelf.webp" alt="书架"><div class="cap"><b>书架</b><span>本地 / 在线统一管理</span></div></div>
+      <div class="shot"><img src="images/13-read.webp" alt="阅读页"><div class="cap"><b>沉浸阅读</b><span>米黄纸感底色</span></div></div>
+      <div class="shot"><img src="images/05-my-more.webp" alt="我的"><div class="cap"><b>我的</b><span>功能与数据管理</span></div></div>
+      <div class="shot"><img src="images/15-read-menu.webp" alt="阅读菜单"><div class="cap"><b>阅读菜单</b><span>五大面板一键呼出</span></div></div>
+      <div class="shot"><img src="images/08-ai.webp" alt="AI 设置"><div class="cap"><b>AI 助手</b><span>OpenAI 兼容接口</span></div></div>
+      <div class="shot"><img src="images/06-sources.webp" alt="书源"><div class="cap"><b>书源管理</b><span>订阅 / 批量管理</span></div></div>
+      <div class="shot"><img src="images/11-reading-stats.webp" alt="统计"><div class="cap"><b>阅读统计</b><span>曲线与活跃度</span></div></div>
+      <div class="shot"><img src="images/23-theme.webp" alt="主题"><div class="cap"><b>主题面板</b><span>5 套文字 + 5 款纹理</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 快速开始 -->
+<section class="section section-alt" id="start">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2>快速开始</h2>
+      <p>三种方式把书装进书架</p>
+    </div>
     <div class="steps">
-      <div class="step"><b>导入本地书籍</b> — 书架空态点击「导入本地书籍或字体」，支持 TXT / EPUB / MOBI / AZW3 / FB2 / FB3 及漫画 CBZ / CBR / CB7。<span>也可通过右上角悬浮按钮随时导入。</span></div>
-      <div class="step"><b>在线书源搜书</b> — 「我的 → 书源管理」订阅书源后，通过搜索 / 分类把在线书籍加入书架并缓存。</div>
-      <div class="step"><b>电脑传输</b> — 开启局域网 Web 服务，在电脑浏览器打开手机地址，直接网页阅读 / 上传书籍与字体。</div>
+      <div class="step">
+        <h3>导入本地书籍</h3>
+        <p>书架空态点击「导入本地书籍或字体」，支持 TXT / EPUB / MOBI 及漫画 CBZ / CBR。</p>
+      </div>
+      <div class="step">
+        <h3>在线书源搜书</h3>
+        <p>「我的 → 书源管理」订阅书源后，搜索或分类把在线书籍加入书架并缓存。</p>
+      </div>
+      <div class="step">
+        <h3>电脑传输</h3>
+        <p>开启局域网 Web 服务，电脑浏览器访问手机地址，直接阅读 / 上传书籍与字体。</p>
+      </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ============ 创作教程 ============ -->
-  <section>
-    <h2>创作教程<span class="en">Tutorials</span></h2>
-    <p class="sec-desc">想自己动手扩展墨伴？官方示例仓库手把手教你创建书源与插件：</p>
-    <div class="grid">
-      <a class="feature" href="https://github.com/Jason-wam/moban-web-source-demo" target="_blank" rel="noopener">
-        <span class="tag">书源</span>
-        <h3>书源创建教程<span class="arrow">↗</span></h3>
-        <p>从零创建网络书源：规则语法、目录 / 正文 / 搜索解析示例与调试方法。</p>
+<!-- 创作教程 -->
+<section class="section" id="docs">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2>创作教程</h2>
+      <p>想自己动手扩展墨伴？官方示例仓库手把手教你</p>
+    </div>
+    <div class="links-row">
+      <a class="link-card" href="https://github.com/Jason-wam/moban-web-source-demo" target="_blank" rel="noopener">
+        <div class="link-icon"><i class="fas fa-code"></i></div>
+        <div><h3>书源创建教程 <span class="arrow">↗</span></h3><p>规则语法、目录/正文/搜索解析示例与调试方法</p></div>
       </a>
-      <a class="feature" href="https://github.com/Jason-wam/moban-plugin-demo" target="_blank" rel="noopener">
-        <span class="tag">插件</span>
-        <h3>插件创建教程<span class="arrow">↗</span></h3>
-        <p>插件开发示例：接口说明、功能扩展与打包发布流程。</p>
+      <a class="link-card" href="https://github.com/Jason-wam/moban-plugin-demo" target="_blank" rel="noopener">
+        <div class="link-icon"><i class="fas fa-plug"></i></div>
+        <div><h3>插件创建教程 <span class="arrow">↗</span></h3><p>插件开发示例、接口说明、打包发布流程</p></div>
       </a>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ============ 主界面 ============ -->
-  <section>
-    <h2>主界面导览<span class="en">Main Tabs</span></h2>
-    <p class="sec-desc">底部导航四个页签：书架、分类、统计、我的。</p>
-    <div class="shots">
-      <div class="shot"><img src="images/01-shelf.webp" alt="书架"><div class="cap"><b>书架</b><span>本地 / 在线书籍统一管理，封面、进度、来源一览，支持快速继续阅读</span></div></div>
-      <div class="shot"><img src="images/14-detail.webp" alt="书籍详情"><div class="cap"><b>书籍详情 / 目录</b><span>共 21 章目录、章节定位、分卷与倒序、阅读进度、来源信息</span></div></div>
-      <div class="shot"><img src="images/04-my.webp" alt="我的"><div class="cap"><b>我的</b><span>功能管理（书源 / 净化 / 助手 / 朗读）与数据管理（字体 / 统计 / 密钥）</span></div></div>
-      <div class="shot"><img src="images/05-my-more.webp" alt="其他设置"><div class="cap"><b>其他设置</b><span>电池优化白名单、清理缓存、问题反馈、隐私政策</span></div></div>
-    </div>
-  </section>
-
-  <!-- ============ 阅读体验 ============ -->
-  <section>
-    <h2>阅读体验<span class="en">Reading</span></h2>
-    <p class="sec-desc">阅读页点击屏幕中央呼出菜单：顶部为章节导航与工具入口，底部为亮度条与五大面板，左右下角悬浮亮度 / AI 助手按钮。</p>
-    <div class="shots">
-      <div class="shot"><img src="images/13-read.webp" alt="阅读页"><div class="cap"><b>沉浸阅读页</b><span>米黄纸感底色、章节标题、页眉时间电量、页脚进度字数</span></div></div>
-      <div class="shot"><img src="images/15-read-menu.webp" alt="阅读菜单"><div class="cap"><b>阅读菜单</b><span>亮度条 + 目录 / 排版 / 朗读 / 主题 / 设置，两侧悬浮亮度与 AI 助手</span></div></div>
-      <div class="shot"><img src="images/16-typeset.webp" alt="排版设置"><div class="cap"><b>排版设置</b><span>首行缩进、图片拉伸、纸质效果与浓度、字体 / 行距 / 段距 / 四边边距</span></div></div>
-      <div class="shot"><img src="images/23-theme.webp" alt="主题"><div class="cap"><b>主题面板</b><span>5 套文字颜色主题 + 5 款背景纹理，支持更多主题扩展</span></div></div>
-      <div class="shot"><img src="images/18-read-settings.webp" alt="设置菜单"><div class="cap"><b>设置菜单</b><span>简繁互转、词典、单手模式、翻页震动、音量键翻页、熄屏超时等</span></div></div>
-      <div class="shot"><img src="images/21-animation.webp" alt="翻页动画"><div class="cap"><b>翻页动画设置</b><span>动画类型 + 动画插值器两级设置</span></div></div>
-    </div>
-
-    <h3 style="margin:26px 0 12px 16px;font-size:17px;">六种翻页动画</h3>
-    <ul class="feat-list">
-      <li><b>滑盖翻页</b> — <span>当前页像盖子一样滑开露出下一页；回退时上一页从左侧盖入，带边缘阴影。</span></li>
-      <li><b>交互翻页</b> — <span>跟手平移 + x 轴半速视差 + 整块蒙板渐变，前进回退可随时反向，无限连续拖动。</span></li>
-      <li><b>平滑翻页</b> — <span>上一页 / 当前页 / 下一页三页并排整体平移，手指拖到哪页翻到哪页。</span></li>
-      <li><b>垂直翻页</b> — <span>上下滚动式翻页，支持章尾上滑 / 章首下拉跨章续读。</span></li>
-      <li><b>仿真翻页</b> — <span>纸张卷曲效果，还原实体书翻页手感。</span></li>
-      <li><b>禁用动画</b> — <span>点击热区 / 拖动直接换页，无动画。</span></li>
-    </ul>
-    <p class="sec-desc" style="margin-top:10px;">滑盖 / 交互 / 平滑三种横向动画均采用「三页流水线」连续交互：手指左右拖动页面跟手平移，松手按位移与速度自动吸附，一次拖动可连续跨越多页；到达章节边界时提供阻尼外拉回弹。另可选 7 种动画插值器（线性 / 回弹 / 减速 / 加速 / 预判等）。</p>
-  </section>
-
-  <!-- ============ AI 功能 ============ -->
-  <section>
-    <h2>AI 智能助手<span class="en">AI Assistant</span></h2>
-    <p class="sec-desc">兼容任意 OpenAI 格式接口（DeepSeek、通义、Ollama 本地模型等），Key 仅保存在本机。</p>
-    <div class="shots">
-      <div class="shot"><img src="images/08-ai.webp" alt="助手设置"><div class="cap"><b>助手设置</b><span>接口服务商 / 地址 / API Key / 模型 / 上下文长度 / 连通性测试</span></div></div>
-      <div class="shot"><img src="images/19-ai-panel.webp" alt="AI 助手菜单"><div class="cap"><b>AI 助手菜单</b><span>阅读页右下角 AI 按钮呼出，一键调用各项能力</span></div></div>
-      <div class="shot"><img src="images/12-keys.webp" alt="密钥管理"><div class="cap"><b>密钥管理</b><span>对话 AI / 大模型朗读 / 文生图填过的 Key 按接口归一收集</span></div></div>
-    </div>
-    <ul class="feat-list" style="margin-top:16px;">
-      <li><b>章节总结 / 全书速读</b> — <span>快速掌握剧情脉络，长书也不怕迷路。</span></li>
-      <li><b>人物关系梳理</b> — <span>自动整理出场人物与关系网络。</span></li>
-      <li><b>阅读问答</b> — <span>选中内容即问即答，结合上下文理解文意。</span></li>
-      <li><b>AI 陪读</b> — <span>边读边聊，陪读感想自动缓存避免重复请求。</span></li>
-      <li><b>生成画面</b> — <span>文生图接口按场景描述生成插图 / 封面，风格可配置。</span></li>
-      <li><b>排版优化 / 内容净化</b> — <span>AI 修正错字与格式、净化广告噪音，保留版权与简介等关键内容。</span></li>
-      <li><b>生僻字注音 / 自动打标</b> — <span>智能注音与标签，重打标前会提醒避免覆盖原始信息。</span></li>
-      <li><b>AI 技能管理</b> — <span>自定义提示词技能，扩展专属阅读助手。</span></li>
-    </ul>
-  </section>
-
-  <!-- ============ 语音朗读 ============ -->
-  <section>
-    <h2>语音朗读<span class="en">Read Aloud</span></h2>
-    <p class="sec-desc">系统 TTS 与大模型朗读双引擎，阅读页「朗读」面板即可控制。</p>
-    <div class="shots">
-      <div class="shot"><img src="images/09-tts.jpg" alt="朗读设置"><div class="cap"><b>朗读设置</b><span>朗读引擎、发音人、语速等朗读配置</span></div></div>
-      <div class="shot"><img src="images/17-tts.webp" alt="朗读面板"><div class="cap"><b>朗读控制面板</b><span>进度拖动、上 / 下章切换，朗读段落高亮跟随</span></div></div>
-    </div>
-  </section>
-
-  <!-- ============ 笔记与词典 ============ -->
-  <section>
-    <h2>划线 · 笔记 · 词典<span class="en">Notes &amp; Dictionary</span></h2>
-    <div class="grid">
-      <div class="feature"><span class="tag">文本选择</span><h3>拖动式选择</h3><p>长按词组选择 / 双击取词，可切换整段选择模式，支持跨页选择。</p></div>
-      <div class="feature"><span class="tag">划线批注</span><h3>划线与评论</h3><p>选中文本一键划线、添加批注评论，划线点击可回看与编辑。</p></div>
-      <div class="feature"><span class="tag">词典</span><h3>点按查词</h3><p>内置词典（含成语 / 歇后语），点击生僻字与词语即时弹出释义。</p></div>
-      <div class="feature"><span class="tag">问 AI</span><h3>划词问 AI</h3><p>选中内容直接发送给 AI 解释、翻译或展开讨论。</p></div>
-    </div>
-  </section>
-
-  <!-- ============ 书源与在线内容 ============ -->
-  <section>
-    <h2>书源与在线内容<span class="en">Online Sources</span></h2>
-    <div class="shots">
-      <div class="shot"><img src="images/06-sources.webp" alt="书源管理"><div class="cap"><b>书源管理</b><span>订阅 / 导入 / 启用禁用在线书源，支持批量管理</span></div></div>
-      <div class="shot"><img src="images/07-replace.webp" alt="净化规则"><div class="cap"><b>净化规则</b><span>全局正文替换 / 净化，阅读时对所有书籍生效</span></div></div>
-    </div>
-    <ul class="feat-list" style="margin-top:16px;">
-      <li><b>多源搜索</b> — <span>一次输入，多书源并发搜索聚合结果。</span></li>
-      <li><b>分类 / 排行浏览</b> — <span>按书源分类与榜单发现新书。</span></li>
-      <li><b>AI 书源识别</b> — <span>粘贴任意小说页面链接，AI 辅助识别生成书源规则。</span></li>
-      <li><b>插件管理</b> — <span>扩展插件统一管理，有更新时「我的」页红点提示。</span></li>
-      <li><b>在线导入</b> — <span>支持 WebDAV、Z-Library、OPDS 等渠道下载入架。</span></li>
-    </ul>
-  </section>
-
-  <!-- ============ 统计与数据 ============ -->
-  <section>
-    <h2>阅读统计与数据管理<span class="en">Stats &amp; Data</span></h2>
-    <div class="shots">
-      <div class="shot"><img src="images/11-reading-stats.webp" alt="阅读统计"><div class="cap"><b>阅读统计</b><span>今日阅读曲线、本周 / 本月时长、阅读活跃度</span></div></div>
-      <div class="shot"><img src="images/10-fonts.webp" alt="字体管理"><div class="cap"><b>字体管理</b><span>系统 7 款 + 在线 28 款字体，支持导入本地字体文件</span></div></div>
-    </div>
-    <ul class="feat-list" style="margin-top:16px;">
-      <li><b>智能计时</b> — <span>停留无操作自动暂停计时，避免虚假阅读时长。</span></li>
-      <li><b>章节缓存</b> — <span>前台进度对话框 / 后台静默两种模式，可随时取消，缓存前引导加入电池优化白名单。</span></li>
-      <li><b>本地存储</b> — <span>Room 数据库 + MMKV，全部数据留在设备，卸载降级也不清库。</span></li>
-      <li><b>密钥管理</b> — <span>所有 AI Key 集中查看管理，仅存本机。</span></li>
-    </ul>
-  </section>
-
-  <!-- ============ Web 端 ============ -->
-  <section>
-    <h2>局域网 Web 端<span class="en">Web Companion</span></h2>
-    <p class="sec-desc">应用内置局域网 HTTP 服务（独立前台 Service 保持后台可用），电脑浏览器访问手机地址即可使用，界面与 App 同风格的响应式网页：</p>
-    <div class="grid">
-      <div class="feature"><span class="tag">网页书架</span><h3>在线阅读</h3><p>浏览器直接阅读书架书籍，阅读进度与 App 同步。</p></div>
-      <div class="feature"><span class="tag">上传</span><h3>书籍 / 字体上传</h3><p>拖拽上传 TXT / EPUB 与字体文件，自动导入 App。</p></div>
-      <div class="feature"><span class="tag">书源</span><h3>书源管理</h3><p>网页端管理书源订阅与启用状态。</p></div>
-      <div class="feature"><span class="tag">私密</span><h3>私密书架</h3><p>独立密码保护的隐藏书架，Web 端同样可访问。</p></div>
-    </div>
-  </section>
-
-  <!-- ============ 其他 ============ -->
-  <section>
-    <h2>其他能力<span class="en">More</span></h2>
-    <div class="grid">
-      <div class="feature"><span class="tag">漫画</span><h3>漫画阅读器</h3><p>独立漫画阅读模式与图片查看器，支持缩放手势。</p></div>
-      <div class="feature"><span class="tag">单手模式</span><h3>单手畅读</h3><p>底部操作区下沉，大屏单手也能轻松翻页与呼出菜单。</p></div>
-      <div class="feature"><span class="tag">简繁互转</span><h3>简体 / 繁体</h3><p>全文简繁实时转换，阅读无障碍。</p></div>
-      <div class="feature"><span class="tag">细节</span><h3>贴心小功能</h3><p>音量键翻页、翻页震动反馈、实时电量显示、熄屏超时、亮度随手指。</p></div>
-    </div>
-  </section>
-
-
-</main>
+<!-- CTA -->
+<section class="cta">
+  <h2>准备好开始阅读了吗</h2>
+  <p>下载墨伴阅读器，享受一站式阅读体验。</p>
+  <div class="hero-actions" id="ctaActions" style="display:none; justify-content:center;">
+    <a class="btn-primary" id="dlBtn2" href="#" target="_blank" rel="noopener">
+      <i class="fas fa-download"></i> 下载安装
+      <span class="qr-popover"><img id="dlQrImg2" alt="扫码安装"><span class="tip">手机扫码直接下载</span></span>
+    </a>
+    <a class="btn-secondary" id="dlRelease2" href="#" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub Release</a>
+  </div>
+</section>
 
 <footer>
-  墨伴 · 使用说明 · 截图取自真机实拍 · <a href="https://github.com/Jason-wam/MoBan-Docs/issues/new">问题反馈前往 GitHub Issues</a>
+  <p>墨伴阅读器 · 纯本地存储 · 数据自主可控 · <a href="https://github.com/Jason-wam/MoBan-Docs/issues/new" target="_blank" rel="noopener">问题反馈前往 GitHub Issues</a></p>
 </footer>
 
+<!-- 微信浏览器提示 -->
+<div class="tip-overlay" id="wechatTip">
+  <div class="tip-box">
+    <div class="icon">💬</div>
+    <h3>请在浏览器中打开</h3>
+    <p>当前在微信浏览器内，无法直接下载 APK。<br>点击右上角「…」选择「在浏览器中打开」即可。</p>
+    <button onclick="document.getElementById('wechatTip').classList.remove('show')">我知道了</button>
+  </div>
+</div>
+
+<!-- iPhone 提示 -->
+<div class="tip-overlay" id="iphoneTip">
+  <div class="tip-box">
+    <div class="icon">📱</div>
+    <h3>iOS 暂不支持</h3>
+    <p>墨伴阅读器为 Android 应用，iOS 版本暂未上架 App Store。</p>
+    <button onclick="document.getElementById('iphoneTip').classList.remove('show')">我知道了</button>
+  </div>
+</div>
+
+<script>
+/* ============ 二维码 ============ */
+const QR_API = 'https://api.2dcode.biz/v1/create-qr-code?data=';
+
+/* ============ 下载数据 ============ */
+const GITHUB_RELEASE_API = 'https://ghclone.com/https://api.github.com/repos/Jason-wam/MoBan-Docs/releases/latest';
+const PROXY_PREFIX = 'https://ghfast.top/';
+
+function proxyUrl(url) {
+  if (!url) return url;
+  if (/^(https?:\/\/)?([^\/]*\.)?(github\.com|githubusercontent\.com|objects\.githubusercontent\.com)\//i.test(url)) {
+    return PROXY_PREFIX + url;
+  }
+  return url;
+}
+
+function formatSize(bytes) {
+  if (!bytes || bytes <= 0) return '—';
+  const mb = bytes / 1024 / 1024;
+  if (mb >= 1024) return (mb / 1024).toFixed(2) + ' GB';
+  return mb.toFixed(2) + ' MB';
+}
+
+async function loadVersion() {
+  try {
+    const resp = await fetch(GITHUB_RELEASE_API, { cache: 'no-cache' });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    const asset = (data.assets || []).find(a => a.name.endsWith('.apk'));
+
+    const tagEl = document.getElementById('dlTag'); if (tagEl) tagEl.textContent = data.tag_name || '';
+    const sizeEl = document.getElementById('dlSize'); if (sizeEl) sizeEl.textContent = asset ? formatSize(asset.size) : '—';
+    const dateEl = document.getElementById('dlDate'); if (dateEl) dateEl.textContent = (data.published_at || '').slice(0, 10);
+
+    const apkUrl = proxyUrl(asset ? asset.browser_download_url : '');
+    const btnEl = document.getElementById('dlBtn'); if (btnEl) btnEl.href = apkUrl || '#';
+    const btn2El = document.getElementById('dlBtn2'); if (btn2El) btn2El.href = apkUrl || '#';
+
+    const relEl = document.getElementById('dlRelease'); if (relEl) relEl.href = data.html_url || '#';
+    const rel2El = document.getElementById('dlRelease2'); if (rel2El) rel2El.href = data.html_url || '#';
+
+    const qrEl = document.getElementById('dlQrImg'); if (qrEl && apkUrl) qrEl.src = QR_API + encodeURIComponent(apkUrl);
+    const qrEl2 = document.getElementById('dlQrImg2'); if (qrEl2 && apkUrl) qrEl2.src = QR_API + encodeURIComponent(apkUrl);
+
+    const cardEl = document.getElementById('downloadCard'); if (cardEl) cardEl.style.display = 'flex';
+    const metaEl = document.getElementById('downloadMeta'); if (metaEl) metaEl.style.display = 'flex';
+    const ctaEl = document.getElementById('ctaActions'); if (ctaEl) ctaEl.style.display = 'flex';
+  } catch (e) {
+    console.warn('GitHub Release API 加载失败：', e);
+  }
+}
+
+/* ============ UA 检测 ============ */
+function showUaTip() {
+  const ua = navigator.userAgent.toLowerCase();
+  if (/iphone|ipad|ipod/.test(ua)) {
+    document.getElementById('iphoneTip').classList.add('show');
+  } else if (/micromessenger/.test(ua)) {
+    document.getElementById('wechatTip').classList.add('show');
+  }
+}
+
+/* ============ 启动 ============ */
+loadVersion();
+showUaTip();
+</script>
 </body>
 </html>
