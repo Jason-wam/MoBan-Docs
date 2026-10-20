@@ -201,9 +201,33 @@
     .hero-actions { flex-direction: column; align-items: stretch; }
     .hero-actions a { justify-content: center; }
   }
+
+  /* ============ 全屏 Loading ============ */
+  .loader-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #fff;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 16px;
+    transition: opacity .35s ease;
+  }
+  .loader-overlay.hiding { opacity: 0; pointer-events: none; }
+  .loader-spinner {
+    width: 36px; height: 36px;
+    border: 3px solid #eee; border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  .loader-text { font-size: 13px; color: var(--text-muted); letter-spacing: 1px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
+<!-- 全屏 Loading -->
+<div id="globalLoader" class="loader-overlay">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">加载中...</div>
+</div>
 
 <!-- 顶栏 -->
 <nav class="nav">
@@ -465,6 +489,7 @@ function formatSize(bytes) {
 }
 
 async function loadVersion() {
+  const loader = document.getElementById('globalLoader');
   try {
     const resp = await fetch(GITHUB_RELEASE_API, { cache: 'no-cache' });
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
@@ -490,6 +515,11 @@ async function loadVersion() {
     const ctaEl = document.getElementById('ctaActions'); if (ctaEl) ctaEl.style.display = 'flex';
   } catch (e) {
     console.warn('GitHub Release API 加载失败：', e);
+  } finally {
+    if (loader) {
+      loader.classList.add('hiding');
+      setTimeout(() => loader.remove(), 380);
+    }
   }
 }
 
