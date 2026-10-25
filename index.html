@@ -262,7 +262,7 @@
         <span>·</span>
         <span id="dlDate">—</span>
       </div>
-      <div class="hero-actions" id="downloadCard" style="display:none;">
+      <div class="hero-actions" id="downloadCard">
         <a class="btn-primary" id="dlBtn" href="#" target="_blank" rel="noopener">
           <i class="fas fa-download"></i> 下载安装
           <span class="qr-popover"><img id="dlQrImg" alt="扫码安装"><span class="tip">手机扫码直接下载</span></span>
@@ -432,7 +432,7 @@
 <section class="cta">
   <h2>准备好开始阅读了吗</h2>
   <p>下载墨伴阅读器，享受一站式阅读体验。</p>
-  <div class="hero-actions" id="ctaActions" style="display:none; justify-content:center;">
+  <div class="hero-actions" id="ctaActions" style="justify-content:center;">
     <a class="btn-primary" id="dlBtn2" href="#" target="_blank" rel="noopener">
       <i class="fas fa-download"></i> 下载安装
       <span class="qr-popover"><img id="dlQrImg2" alt="扫码安装"><span class="tip">手机扫码直接下载</span></span>
@@ -470,8 +470,19 @@
 const QR_API = 'https://api.2dcode.biz/v1/create-qr-code?data=';
 
 /* ============ 下载数据 ============ */
-const GITHUB_RELEASE_API = 'https://ghclone.com/https://api.github.com/repos/Jason-wam/MoBan-Docs/releases/latest';
+const REPO = 'Jason-wam/MoBan-Docs';
+const GITHUB_RELEASES = 'https://github.com/' + REPO + '/releases/latest';
+const GITHUB_API = 'https://api.github.com/repos/' + REPO + '/releases/latest';
 const PROXY_PREFIX = 'https://ghfast.top/';
+// 多个 API 入口并发尝试（直连 + 常见 gh 代理），取最快成功的一个；
+// 避免像此前只依赖单一代理，一旦该代理失效（如 ghclone.com 已无法解析）按钮就永远不显示
+const API_SOURCES = [
+  GITHUB_API,
+  'https://gh-proxy.com/' + GITHUB_API,
+  PROXY_PREFIX + GITHUB_API,
+  'https://ghclone.com/' + GITHUB_API,
+];
+const API_TIMEOUT_MS = 6000;
 
 function proxyUrl(url) {
   if (!url) return url;
@@ -488,31 +499,62 @@ function formatSize(bytes) {
   return mb.toFixed(2) + ' MB';
 }
 
+/** 设置下载入口：apkUrl 为空时回落到 Release 页面，保证按钮始终可点 */
+function setDownloadLinks(apkUrl, releaseUrl) {
+  const href = apkUrl || proxyUrl(GITHUB_RELEASES);
+  const rel = releaseUrl || GITHUB_RELEASES;
+  const btnEl = document.getElementById('dlBtn'); if (btnEl) btnEl.href = href;
+  const btn2El = document.getElementById('dlBtn2'); if (btn2El) btn2El.href = href;
+  const relEl = document.getElementById('dlRelease'); if (relEl) relEl.href = rel;
+  const rel2El = document.getElementById('dlRelease2'); if (rel2El) rel2El.href = rel;
+  const qrEl = document.getElementById('dlQrImg'); if (qrEl) qrEl.src = QR_API + encodeURIComponent(href);
+  const qrEl2 = document.getElementById('dlQrImg2'); if (qrEl2) qrEl2.src = QR_API + encodeURIComponent(href);
+}
+
+/** 单个入口请求（带超时），失败即 reject */
+function fetchReleaseFrom(url) {
+  return new Promise((resolve, reject) => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+    fetch(url, { cache: 'no-cache', signal: controller.signal })
+      .then(resp => {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.json();
+      })
+      .then(resolve)
+      .catch(e => {
+        console.warn('Release 接口不可用：' + url, e);
+        reject(e);
+      })
+      .finally(() => clearTimeout(timer));
+  });
+}
+
+/** 并发请求所有入口，取第一个成功的 Release JSON；全部失败返回 null */
+async function fetchLatestRelease() {
+  try {
+    return await Promise.any(API_SOURCES.map(fetchReleaseFrom));
+  } catch (e) {
+    return null;
+  }
+}
+
 async function loadVersion() {
   const loader = document.getElementById('globalLoader');
+  // 先铺好兜底链接：接口全部失败时，下载按钮依然显示且指向 Release 页面
+  setDownloadLinks('');
   try {
-    const resp = await fetch(GITHUB_RELEASE_API, { cache: 'no-cache' });
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    const data = await resp.json();
-    const asset = (data.assets || []).find(a => a.name.endsWith('.apk'));
-
-    const tagEl = document.getElementById('dlTag'); if (tagEl) tagEl.textContent = data.tag_name || '';
-    const sizeEl = document.getElementById('dlSize'); if (sizeEl) sizeEl.textContent = asset ? formatSize(asset.size) : '—';
-    const dateEl = document.getElementById('dlDate'); if (dateEl) dateEl.textContent = (data.published_at || '').slice(0, 10);
-
-    const apkUrl = proxyUrl(asset ? asset.browser_download_url : '');
-    const btnEl = document.getElementById('dlBtn'); if (btnEl) btnEl.href = apkUrl || '#';
-    const btn2El = document.getElementById('dlBtn2'); if (btn2El) btn2El.href = apkUrl || '#';
-
-    const relEl = document.getElementById('dlRelease'); if (relEl) relEl.href = data.html_url || '#';
-    const rel2El = document.getElementById('dlRelease2'); if (rel2El) rel2El.href = data.html_url || '#';
-
-    const qrEl = document.getElementById('dlQrImg'); if (qrEl && apkUrl) qrEl.src = QR_API + encodeURIComponent(apkUrl);
-    const qrEl2 = document.getElementById('dlQrImg2'); if (qrEl2 && apkUrl) qrEl2.src = QR_API + encodeURIComponent(apkUrl);
-
-    const cardEl = document.getElementById('downloadCard'); if (cardEl) cardEl.style.display = 'flex';
-    const metaEl = document.getElementById('downloadMeta'); if (metaEl) metaEl.style.display = 'flex';
-    const ctaEl = document.getElementById('ctaActions'); if (ctaEl) ctaEl.style.display = 'flex';
+    const data = await fetchLatestRelease();
+    if (data) {
+      const asset = (data.assets || []).find(a => /\.apk$/i.test(a.name));
+      const tagEl = document.getElementById('dlTag'); if (tagEl) tagEl.textContent = data.tag_name || '最新版';
+      const sizeEl = document.getElementById('dlSize'); if (sizeEl) sizeEl.textContent = asset ? formatSize(asset.size) : '—';
+      const dateEl = document.getElementById('dlDate'); if (dateEl) dateEl.textContent = (data.published_at || '').slice(0, 10) || '—';
+      setDownloadLinks(proxyUrl(asset ? asset.browser_download_url : ''), data.html_url);
+      const metaEl = document.getElementById('downloadMeta'); if (metaEl) metaEl.style.display = 'flex';
+    } else {
+      console.warn('所有 Release 接口均不可用，已回落到 Release 页面链接');
+    }
   } catch (e) {
     console.warn('GitHub Release API 加载失败：', e);
   } finally {
