@@ -68,7 +68,7 @@
 |:---:|
 | <img src="images/06-sources.webp" width="240" alt="书源"> |
 
-## 创作教程
+## 书源、插件编写教程
 
 - 书源创建教程：https://github.com/Jason-wam/moban-web-source-demo
 - 插件创建教程：https://github.com/Jason-wam/moban-plugin-demo
