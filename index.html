@@ -196,10 +196,13 @@
   .desk-platform-note { font-size: 11.5px; color: var(--text-muted); margin: 3px 0 12px; }
   .desk-arches { display: flex; flex-direction: column; gap: 8px; }
   .desk-arch {
-    display: flex; align-items: center; gap: 8px;
+    display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 8px;
     padding: 8px 12px; border-radius: 10px;
     background: var(--bg-alt); border: 1px solid transparent;
   }
+  .desk-arch-name { grid-column: 1; grid-row: 1; }
+  .desk-arch-action { grid-column: 2; grid-row: 1; justify-self: end; }
+  .desk-arch-desc { grid-column: 1 / -1; grid-row: 2; font-size: 11px; line-height: 1.45; color: var(--text-muted); }
   .desk-arch.current { background: rgba(59,105,57,.06); border-color: rgba(59,105,57,.28); }
   .desk-arch.off { background: #fafafa; }
   .desk-arch.off .desk-arch-name { color: var(--text-muted); font-weight: 400; }
@@ -573,11 +576,15 @@ const DESKTOP_ARCHES = [
   { key: 'x64', name: 'x64' },
   { key: 'arm64', name: 'ARM64' },
 ];
-// 所有平台共用同一套卡片结构，Android 分通用包与 x86_64（模拟器/桌面版）ABI，桌面端按架构拆分
+// 所有平台共用同一套卡片结构，Android 按 ARM / x86_64 / 通用分包，桌面端按架构拆分
 const PLATFORMS = [
   {
     key: 'android', name: 'Android', icon: 'fab fa-android', ext: 'APK', note: '适用于 Android 8.0 及以上',
-    arches: [{ key: 'universal', name: '通用' }, { key: 'x86_64', name: 'x86_64' }],
+    arches: [
+      { key: 'arm', name: 'ARM', desc: '含 arm64-v8a 与 armeabi-v7a，适用于绝大多数安卓手机' },
+      { key: 'x86_64', name: 'x86_64', desc: '适用于模拟器 / x86 设备' },
+      { key: 'universal', name: '通用', desc: '旧设备兼容，过渡期保留，下一版本可移除' },
+    ],
   },
   { key: 'windows', name: 'Windows', icon: 'fab fa-windows', ext: 'MSI', note: '适用于 Windows 10 及以上', arches: DESKTOP_ARCHES },
   { key: 'macos', name: 'macOS', icon: 'fab fa-apple', ext: 'DMG', note: 'Intel 芯片选 x64，Apple Silicon 选 ARM64', arches: DESKTOP_ARCHES },
@@ -596,8 +603,8 @@ const GH_ENTRY_HTML = '<a class="gh-entry" href="' + GITHUB_RELEASES + '" target
 function detectTarget() {
   const ua = navigator.userAgent;
   const isIPad = /macintosh/i.test(ua) && (navigator.maxTouchPoints || 0) > 1;
-  if (isIPad || /iphone|ipad|ipod/i.test(ua)) return { os: 'android', arch: 'universal', unknown: true };
-  if (/android/i.test(ua)) return { os: 'android', arch: 'universal' };
+  if (isIPad || /iphone|ipad|ipod/i.test(ua)) return { os: 'android', arch: 'arm', unknown: true };
+  if (/android/i.test(ua)) return { os: 'android', arch: 'arm' };
   if (/windows/i.test(ua)) return { os: 'windows', arch: /arm/i.test(ua) ? 'arm64' : 'x64' };
   if (/macintosh|mac os x/i.test(ua)) return { os: 'macos', arch: 'arm64' };
   if (/linux|x11/i.test(ua)) return { os: 'linux', arch: /aarch64|arm64/i.test(ua) ? 'arm64' : 'x64' };
@@ -705,6 +712,7 @@ function renderDownload() {
         + (current ? ' <i class="fas fa-check-circle cur" title="当前设备"></i>' : '')
         + ' <em>· ' + p.ext + '</em></span>'
         + '<span class="desk-arch-action">' + archActionHtml(rowKey) + '</span>'
+        + (a.desc ? '<span class="desk-arch-desc">' + a.desc + '</span>' : '')
         + '</div>';
     }).join('');
     return '<div class="desk-platform">'
