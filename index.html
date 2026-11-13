@@ -56,11 +56,6 @@
     max-width: 1120px; margin: 0 auto; padding: 72px 24px 56px;
     display: grid; grid-template-columns: 1fr auto; gap: 64px; align-items: center;
   }
-  .hero-tagline {
-    font-size: 14px; color: var(--text-sub); margin-bottom: 12px;
-    display: inline-flex; align-items: center; gap: 8px;
-  }
-  .hero-tagline::before { content: ""; width: 20px; height: 1px; background: var(--primary); }
   .hero h1 { font-size: clamp(30px, 5vw, 46px); font-weight: 700; line-height: 1.15; margin-bottom: 0px; letter-spacing: -.02em; }
   .hero h1 .accent { color: var(--primary); }
   .hero-desc { font-size: 16px; color: var(--text-sub); max-width: 540px; margin-bottom: 8px; line-height: 1.7; }
@@ -310,7 +305,6 @@
 <div class="hero-wrap">
   <div class="hero">
     <div class="hero-left">
-      <div class="hero-tagline">Android 原生阅读器 · 纯本地存储</div>
       <h1>墨伴</h1>
       <h2><span class="accent">一站式阅读体验</span></h2>
       <p class="hero-desc">
@@ -322,13 +316,6 @@
         <span id="dlSize">—</span>
         <span>·</span>
         <span id="dlDate">—</span>
-      </div>
-      <div class="hero-actions" id="downloadCard">
-        <a class="btn-primary" id="dlBtn" href="#" target="_blank" rel="noopener">
-          <i class="fas fa-download"></i> 下载安装
-          <span class="qr-popover"><img id="dlQrImg" alt="扫码安装"><span class="tip">手机扫码直接下载</span></span>
-        </a>
-        <a class="btn-secondary" id="dlRelease" href="#" target="_blank" rel="noopener"><i class="fab fa-github"></i> GitHub Release</a>
       </div>
     </div>
     <div class="hero-visual">
@@ -710,11 +697,8 @@ function renderDownload() {
 function setDownloadLinks(apkUrl, releaseUrl) {
   const href = apkUrl || GITHUB_RELEASES;
   const rel = releaseUrl || GITHUB_RELEASES;
-  const btnEl = document.getElementById('dlBtn'); if (btnEl) btnEl.href = href;
   const btn2El = document.getElementById('dlBtn2'); if (btn2El) btn2El.href = href;
-  const relEl = document.getElementById('dlRelease'); if (relEl) relEl.href = rel;
   const rel2El = document.getElementById('dlRelease2'); if (rel2El) rel2El.href = rel;
-  const qrEl = document.getElementById('dlQrImg'); if (qrEl) qrEl.src = QR_API + encodeURIComponent(href);
   const qrEl2 = document.getElementById('dlQrImg2'); if (qrEl2) qrEl2.src = QR_API + encodeURIComponent(href);
 }
 
@@ -765,7 +749,8 @@ async function loadVersion() {
       // 版本号只按对应产物是否真的存在来认定，否则沿用已知版本
       if (tag && releaseAssets['android-universal']) androidVersion = tag;
       if (tag && Object.keys(releaseAssets).some(k => k !== 'android-universal')) desktopVersion = tag;
-      const metaEl = document.getElementById('downloadMeta'); if (metaEl) metaEl.style.display = 'flex';
+      // 没有正式版本号时（仓库尚无 Release）不显示这行版本信息，避免出现空占位
+      const metaEl = document.getElementById('downloadMeta'); if (metaEl && data.tag_name) metaEl.style.display = 'flex';
     } else {
       releaseAssets = null;
       console.warn('所有 Release 接口均不可用，已回落到 Release 页面链接');
