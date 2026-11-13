@@ -169,7 +169,7 @@
   .link-card h3 .arrow { font-size: 11px; color: var(--text-muted); font-weight: 400; }
   .link-card p { font-size: 12.5px; color: var(--text-sub); }
 
-  /* ===== 桌面端下载 ===== */
+  /* ===== 下载区（Android + 桌面端） ===== */
   .desk-main {
     display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
     background: linear-gradient(135deg, rgba(59,105,57,.055), rgba(59,105,57,.02));
@@ -186,10 +186,8 @@
   .desk-badge { font-size: 11px; font-weight: 500; color: var(--primary); background: rgba(59,105,57,.1); border-radius: 50px; padding: 2px 8px; }
   .desk-main-meta { font-size: 12.5px; color: var(--text-sub); }
   .desk-main-note { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
-  .desk-main-action { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; flex-shrink: 0; }
+  .desk-main-action { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; flex-shrink: 0; }
   .desk-main-action .btn-primary { padding: 10px 22px; }
-  .desk-main-link { font-size: 12px; color: var(--text-sub); transition: color .2s; }
-  .desk-main-link:hover { color: var(--primary); }
   .btn-disabled {
     display: inline-flex; align-items: center; gap: .5rem;
     padding: 11px 24px; border-radius: 50px; font-size: 14px; font-weight: 500;
@@ -208,13 +206,24 @@
     background: var(--bg-alt); border: 1px solid transparent;
   }
   .desk-arch.current { background: rgba(59,105,57,.06); border-color: rgba(59,105,57,.28); }
+  .desk-arch.off { background: #fafafa; }
+  .desk-arch.off .desk-arch-name { color: var(--text-muted); font-weight: 400; }
+  .desk-arch.off .desk-arch-name em { color: var(--text-muted); }
   .desk-arch-name { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
   .desk-arch-name em { font-size: 11px; font-style: normal; font-weight: 400; color: var(--text-muted); }
   .desk-arch-name .cur { font-size: 12px; color: var(--primary); }
-  .desk-arch-action { margin-left: auto; }
+  .desk-arch-action { margin-left: auto; display: flex; align-items: center; gap: 8px; }
   .desk-arch-link { font-size: 12.5px; font-weight: 500; color: var(--primary); display: inline-flex; align-items: center; gap: 4px; }
   .desk-arch-link:hover { color: var(--primary-hover); }
   .desk-arch-state { font-size: 12px; color: var(--text-muted); }
+  /* Release 页面入口：GitHub 图标 */
+  .gh-entry {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--text-sub); background: #fff; border: 1px solid var(--border);
+    font-size: 13px; transition: color .2s, border-color .2s;
+  }
+  .gh-entry:hover { color: var(--primary); border-color: var(--primary); }
   .desk-foot { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 16px; }
 
   /* ===== CTA ===== */
@@ -248,9 +257,8 @@
     .nav-links .nav-text { display: none; }
     .hero-actions { flex-direction: column; align-items: stretch; }
     .hero-actions a { justify-content: center; }
-    .desk-main-action { align-items: stretch; width: 100%; }
+    .desk-main-action { width: 100%; justify-content: center; }
     .desk-main-action .btn-primary, .desk-main-action .btn-secondary, .desk-main-action .btn-disabled { justify-content: center; }
-    .desk-main-link { text-align: center; }
   }
 
   /* ============ 全屏 Loading ============ */
@@ -288,7 +296,7 @@
       <span>墨伴</span>
     </a>
     <div class="nav-links">
-      <a class="nav-text" href="#desktop">桌面端</a>
+      <a class="nav-text" href="#download">下载</a>
       <a class="nav-text" href="#docs">书源、插件编写教程</a>
       <a class="nav-text" href="#features">核心功能</a>
       <a class="nav-text" href="#why">为什么选择</a>
@@ -329,16 +337,16 @@
   </div>
 </div>
 
-<!-- 桌面端下载 -->
-<section class="section" id="desktop">
+<!-- 下载 -->
+<section class="section" id="download">
   <div class="section-inner">
     <div class="section-head">
-      <h2>桌面端下载</h2>
-      <p>Windows / macOS / Linux 原生客户端 · 当前版本 <span id="deskVersion">1.3.0</span></p>
+      <h2>下载墨伴</h2>
+      <p>Android / Windows / macOS / Linux 全平台客户端 · 当前版本 <span id="dlVersion">1.3.0</span></p>
     </div>
-    <div class="desk-main" id="deskMain"></div>
-    <div class="desk-grid" id="deskList"></div>
-    <p class="desk-foot">桌面端安装包随 GitHub Release 发布，标注「暂未提供」的平台当前尚无可用产物。</p>
+    <div class="desk-main" id="dlMain"></div>
+    <div class="desk-grid" id="dlList"></div>
+    <p class="desk-foot">安装包随 GitHub Release 发布，仅当对应平台存在产物时才提供下载，标注「暂未提供」的平台当前尚无可用安装包。</p>
   </div>
 </section>
 
@@ -550,12 +558,11 @@ const API_SOURCES = [
 ];
 const API_TIMEOUT_MS = 6000;
 
+/** 下载地址统一走 ghfast.top 代理：https://ghfast.top/ + 原始地址 */
 function proxyUrl(url) {
   if (!url) return url;
-  if (/^(https?:\/\/)?([^\/]*\.)?(github\.com|githubusercontent\.com|objects\.githubusercontent\.com)\//i.test(url)) {
-    return PROXY_PREFIX + url;
-  }
-  return url;
+  if (url.indexOf(PROXY_PREFIX) === 0) return url;
+  return PROXY_PREFIX + url;
 }
 
 function formatSize(bytes) {
@@ -565,105 +572,130 @@ function formatSize(bytes) {
   return mb.toFixed(2) + ' MB';
 }
 
-/* ============ 桌面端下载 ============ */
-// 桌面端产物命名：MoBan-Reader-<tag>-<platform>-<arch>.<ext>
-const DESKTOP_VERSION_FALLBACK = '1.3.0';
+/* ============ 下载区（Android / Windows / macOS / Linux） ============ */
+// 桌面端产物命名：MoBan-Reader-<tag>-<platform>-<arch>.<ext>；Android 为任意 .apk
+const VERSION_FALLBACK = '1.3.0';
 const DESKTOP_ASSET_RE = /^MoBan-Reader-(.+)-(windows|macos|linux)-(x64|arm64)\.(msi|dmg|deb)$/i;
-const DESKTOP_PLATFORMS = [
-  { key: 'windows', name: 'Windows', icon: 'fab fa-windows', ext: 'MSI', note: '适用于 Windows 10 及以上' },
-  { key: 'macos', name: 'macOS', icon: 'fab fa-apple', ext: 'DMG', note: 'Intel 芯片选 x64，Apple Silicon 选 ARM64' },
-  { key: 'linux', name: 'Linux', icon: 'fab fa-linux', ext: 'DEB', note: '适用于 Debian / Ubuntu 等发行版' },
-];
+const ANDROID_ASSET_RE = /\.apk$/i;
 const DESKTOP_ARCHES = [
   { key: 'x64', name: 'x64' },
   { key: 'arm64', name: 'ARM64' },
 ];
+// 所有平台共用同一套卡片结构，Android 只有一个通用包，桌面端按架构拆分
+const PLATFORMS = [
+  { key: 'android', name: 'Android', icon: 'fab fa-android', ext: 'APK', note: '适用于 Android 8.0 及以上', arches: [{ key: 'universal', name: '通用' }] },
+  { key: 'windows', name: 'Windows', icon: 'fab fa-windows', ext: 'MSI', note: '适用于 Windows 10 及以上', arches: DESKTOP_ARCHES },
+  { key: 'macos', name: 'macOS', icon: 'fab fa-apple', ext: 'DMG', note: 'Intel 芯片选 x64，Apple Silicon 选 ARM64', arches: DESKTOP_ARCHES },
+  { key: 'linux', name: 'Linux', icon: 'fab fa-linux', ext: 'DEB', note: '适用于 Debian / Ubuntu 等发行版', arches: DESKTOP_ARCHES },
+];
 
 // undefined = 正在获取，null = 接口不可用，对象 = 已按 <platform>-<arch> 索引的资产
-let desktopAssets;
-let desktopVersion = DESKTOP_VERSION_FALLBACK;
+let releaseAssets;
+let androidVersion = VERSION_FALLBACK;
+let desktopVersion = VERSION_FALLBACK;
 
-/** 按 UA 推断当前桌面系统与架构；手机或无法识别时返回 unknown，由页面给出默认推荐 */
-function detectDesktopTarget() {
+// Release 页面入口：GitHub 图标，指向原始地址，不套代理
+const GH_ENTRY_HTML = '<a class="gh-entry" href="' + GITHUB_RELEASES + '" target="_blank" rel="noopener" title="GitHub Release"><i class="fab fa-github"></i></a>';
+
+/** 按 UA 推断当前设备平台；iOS 与无法识别的情况标记 unknown，由页面给出默认推荐 */
+function detectTarget() {
   const ua = navigator.userAgent;
   const isIPad = /macintosh/i.test(ua) && (navigator.maxTouchPoints || 0) > 1;
-  if (isIPad || /iphone|ipad|ipod|android/i.test(ua)) return { os: 'windows', arch: 'x64', unknown: true };
+  if (isIPad || /iphone|ipad|ipod/i.test(ua)) return { os: 'android', arch: 'universal', unknown: true };
+  if (/android/i.test(ua)) return { os: 'android', arch: 'universal' };
   if (/windows/i.test(ua)) return { os: 'windows', arch: /arm/i.test(ua) ? 'arm64' : 'x64' };
   if (/macintosh|mac os x/i.test(ua)) return { os: 'macos', arch: 'arm64' };
   if (/linux|x11/i.test(ua)) return { os: 'linux', arch: /aarch64|arm64/i.test(ua) ? 'arm64' : 'x64' };
   return { os: 'windows', arch: 'x64', unknown: true };
 }
 
-function indexDesktopAssets(assets) {
+/** 把 Release 资产整理成 <platform>-<arch> 索引；没有对应产物就不产生条目 */
+function indexAssets(assets) {
   const map = {};
   (assets || []).forEach(a => {
-    const m = DESKTOP_ASSET_RE.exec(a.name);
-    if (m) map[m[2].toLowerCase() + '-' + m[3].toLowerCase()] = { url: a.browser_download_url, size: a.size };
+    const name = a.name || '';
+    const m = DESKTOP_ASSET_RE.exec(name);
+    if (m) {
+      map[m[2].toLowerCase() + '-' + m[3].toLowerCase()] = { url: a.browser_download_url, size: a.size };
+    } else if (ANDROID_ASSET_RE.test(name) && !map['android-universal']) {
+      map['android-universal'] = { url: a.browser_download_url, size: a.size };
+    }
   });
   return map;
 }
 
-/** 单个平台/架构入口：有产物给下载链接，确认没有则标注暂未提供，接口不可用时回落到 Release 页面 */
-function desktopLinkHtml(key) {
-  if (desktopAssets === undefined) return '<span class="desk-arch-state">获取中…</span>';
-  if (desktopAssets === null) return '<a class="desk-arch-link" href="' + GITHUB_RELEASES + '" target="_blank" rel="noopener">查看 Release</a>';
-  const asset = desktopAssets[key];
-  if (!asset) return '<span class="desk-arch-state">暂未提供</span>';
-  return '<a class="desk-arch-link" href="' + proxyUrl(asset.url) + '" target="_blank" rel="noopener">下载 <i class="fas fa-arrow-down"></i></a>';
+/** 单个平台/架构的状态：loading 获取中，missing 没有产物，unavailable 接口不可用，对象为可用资产 */
+function assetState(key) {
+  if (releaseAssets === undefined) return 'loading';
+  if (releaseAssets === null) return 'unavailable';
+  const asset = releaseAssets[key];
+  return asset ? { asset: asset } : 'missing';
 }
 
-function renderDesktop() {
-  const mainEl = document.getElementById('deskMain');
-  const listEl = document.getElementById('deskList');
-  const verEl = document.getElementById('deskVersion');
+/** 只有确实存在安装包才给下载按钮，否则置灰并给 GitHub 图标入口 */
+function archActionHtml(key) {
+  const state = assetState(key);
+  if (state === 'loading') return '<span class="desk-arch-state">获取中…</span>';
+  if (state === 'missing') return '<span class="desk-arch-state">暂未提供</span>' + GH_ENTRY_HTML;
+  if (state === 'unavailable') return '<span class="desk-arch-state">获取失败</span>' + GH_ENTRY_HTML;
+  return '<a class="desk-arch-link" href="' + proxyUrl(state.asset.url) + '" target="_blank" rel="noopener">下载 <i class="fas fa-arrow-down"></i></a>';
+}
+
+function renderDownload() {
+  const mainEl = document.getElementById('dlMain');
+  const listEl = document.getElementById('dlList');
+  const verEl = document.getElementById('dlVersion');
   if (!mainEl || !listEl) return;
 
-  const target = detectDesktopTarget();
-  const platform = DESKTOP_PLATFORMS.find(p => p.key === target.os) || DESKTOP_PLATFORMS[0];
-  const archLabel = target.arch === 'arm64' ? 'ARM64' : 'x64';
-  const key = target.os + '-' + target.arch;
-  const asset = desktopAssets ? desktopAssets[key] : null;
+  const target = detectTarget();
+  const platform = PLATFORMS.find(p => p.key === target.os) || PLATFORMS[0];
+  const arch = platform.arches.find(a => a.key === target.arch) || platform.arches[0];
+  const key = platform.key + '-' + arch.key;
+  const state = assetState(key);
+  const asset = typeof state === 'object' ? state.asset : null;
+  const version = platform.key === 'android' ? androidVersion : desktopVersion;
 
-  if (verEl) verEl.textContent = desktopVersion;
+  if (verEl) verEl.textContent = version;
 
-  const meta = [platform.ext + ' 安装包', '版本 v' + desktopVersion];
+  const meta = [platform.ext + ' 安装包', '版本 v' + version];
   if (asset && asset.size) meta.push(formatSize(asset.size));
   const notes = [];
-  if (target.unknown) notes.push('未识别到桌面系统，已按默认推荐；你也可以在下方选择对应平台。');
+  if (target.unknown) notes.push('未识别到当前设备，已按默认平台推荐；你也可以在下方选择对应平台。');
   if (target.os === 'macos') notes.push('浏览器无法判断芯片型号，默认按 Apple Silicon 推荐，Intel 机型请选 x64。');
 
   let actionHtml;
   if (asset) {
     actionHtml = '<a class="btn-primary" href="' + proxyUrl(asset.url) + '" target="_blank" rel="noopener"><i class="fas fa-download"></i> 下载 ' + platform.name + ' 版</a>'
-      + '<a class="desk-main-link" href="' + GITHUB_RELEASES + '" target="_blank" rel="noopener">GitHub Release</a>';
-  } else if (desktopAssets === null) {
-    actionHtml = '<a class="btn-secondary" href="' + GITHUB_RELEASES + '" target="_blank" rel="noopener"><i class="fab fa-github"></i> 前往 Release 查看</a>';
-  } else if (desktopAssets === undefined) {
+      + GH_ENTRY_HTML;
+  } else if (state === 'loading') {
     actionHtml = '<span class="btn-disabled"><i class="fas fa-circle-notch fa-spin"></i> 获取安装包信息…</span>';
+  } else if (state === 'unavailable') {
+    actionHtml = '<span class="btn-disabled"><i class="fas fa-hourglass-half"></i> 获取失败</span>' + GH_ENTRY_HTML;
   } else {
-    actionHtml = '<span class="btn-disabled"><i class="fas fa-hourglass-half"></i> 暂未提供</span>'
-      + '<a class="desk-main-link" href="' + GITHUB_RELEASES + '" target="_blank" rel="noopener">关注 GitHub Release</a>';
+    actionHtml = '<span class="btn-disabled"><i class="fas fa-hourglass-half"></i> 暂未提供</span>' + GH_ENTRY_HTML;
   }
 
   mainEl.innerHTML =
     '<div class="desk-main-icon"><i class="' + platform.icon + '"></i></div>'
     + '<div class="desk-main-body">'
-    + '<div class="desk-main-title">' + platform.name + ' · ' + archLabel
-    + '<span class="desk-badge">' + (target.unknown ? '默认推荐' : '当前系统') + '</span></div>'
+    + '<div class="desk-main-title">' + platform.name + ' · ' + arch.name
+    + '<span class="desk-badge">' + (target.unknown ? '默认推荐' : '当前设备') + '</span></div>'
     + '<div class="desk-main-meta">' + meta.join(' · ') + '</div>'
     + (notes.length ? '<div class="desk-main-note">' + notes.join(' ') + '</div>' : '')
     + '</div>'
     + '<div class="desk-main-action">' + actionHtml + '</div>';
 
-  listEl.innerHTML = DESKTOP_PLATFORMS.map(p => {
-    const rows = DESKTOP_ARCHES.map(a => {
+  listEl.innerHTML = PLATFORMS.map(p => {
+    const rows = p.arches.map(a => {
       const rowKey = p.key + '-' + a.key;
       const current = rowKey === key;
-      return '<div class="desk-arch' + (current ? ' current' : '') + '">'
+      const rowState = assetState(rowKey);
+      const off = rowState === 'missing' || rowState === 'unavailable';
+      return '<div class="desk-arch' + (current ? ' current' : '') + (off ? ' off' : '') + '">'
         + '<span class="desk-arch-name">' + a.name
-        + (current ? ' <i class="fas fa-check-circle cur" title="当前系统"></i>' : '')
+        + (current ? ' <i class="fas fa-check-circle cur" title="当前设备"></i>' : '')
         + ' <em>· ' + p.ext + '</em></span>'
-        + '<span class="desk-arch-action">' + desktopLinkHtml(rowKey) + '</span>'
+        + '<span class="desk-arch-action">' + archActionHtml(rowKey) + '</span>'
         + '</div>';
     }).join('');
     return '<div class="desk-platform">'
@@ -676,7 +708,7 @@ function renderDesktop() {
 
 /** 设置下载入口：apkUrl 为空时回落到 Release 页面，保证按钮始终可点 */
 function setDownloadLinks(apkUrl, releaseUrl) {
-  const href = apkUrl || proxyUrl(GITHUB_RELEASES);
+  const href = apkUrl || GITHUB_RELEASES;
   const rel = releaseUrl || GITHUB_RELEASES;
   const btnEl = document.getElementById('dlBtn'); if (btnEl) btnEl.href = href;
   const btn2El = document.getElementById('dlBtn2'); if (btn2El) btn2El.href = href;
@@ -693,6 +725,8 @@ function fetchReleaseFrom(url) {
     const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
     fetch(url, { cache: 'no-cache', signal: controller.signal })
       .then(resp => {
+        // 仓库还没有任何 Release 时接口返回 404，按「没有安装包」处理，而不是当作接口故障
+        if (resp.status === 404) return { assets: [] };
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         return resp.json();
       })
@@ -721,26 +755,26 @@ async function loadVersion() {
   try {
     const data = await fetchLatestRelease();
     if (data) {
-      const asset = (data.assets || []).find(a => /\.apk$/i.test(a.name));
+      const tag = (data.tag_name || '').replace(/^v/i, '');
+      const asset = (data.assets || []).find(a => ANDROID_ASSET_RE.test(a.name));
       const tagEl = document.getElementById('dlTag'); if (tagEl) tagEl.textContent = data.tag_name || '最新版';
       const sizeEl = document.getElementById('dlSize'); if (sizeEl) sizeEl.textContent = asset ? formatSize(asset.size) : '—';
       const dateEl = document.getElementById('dlDate'); if (dateEl) dateEl.textContent = (data.published_at || '').slice(0, 10) || '—';
       setDownloadLinks(proxyUrl(asset ? asset.browser_download_url : ''), data.html_url);
-      desktopAssets = indexDesktopAssets(data.assets);
-      // 只有该 Release 真的带了桌面端产物，标签才代表桌面端版本；否则沿用已知的桌面版本号
-      if (Object.keys(desktopAssets).length) {
-        desktopVersion = (data.tag_name || '').replace(/^v/i, '') || DESKTOP_VERSION_FALLBACK;
-      }
+      releaseAssets = indexAssets(data.assets);
+      // 版本号只按对应产物是否真的存在来认定，否则沿用已知版本
+      if (tag && releaseAssets['android-universal']) androidVersion = tag;
+      if (tag && Object.keys(releaseAssets).some(k => k !== 'android-universal')) desktopVersion = tag;
       const metaEl = document.getElementById('downloadMeta'); if (metaEl) metaEl.style.display = 'flex';
     } else {
-      desktopAssets = null;
+      releaseAssets = null;
       console.warn('所有 Release 接口均不可用，已回落到 Release 页面链接');
     }
   } catch (e) {
-    desktopAssets = null;
+    releaseAssets = null;
     console.warn('GitHub Release API 加载失败：', e);
   } finally {
-    renderDesktop();
+    renderDownload();
     if (loader) {
       loader.classList.add('hiding');
       setTimeout(() => loader.remove(), 380);
@@ -759,7 +793,7 @@ function showUaTip() {
 }
 
 /* ============ 启动 ============ */
-renderDesktop();
+renderDownload();
 loadVersion();
 showUaTip();
 </script>
