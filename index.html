@@ -169,6 +169,54 @@
   .link-card h3 .arrow { font-size: 11px; color: var(--text-muted); font-weight: 400; }
   .link-card p { font-size: 12.5px; color: var(--text-sub); }
 
+  /* ===== 桌面端下载 ===== */
+  .desk-main {
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    background: linear-gradient(135deg, rgba(59,105,57,.055), rgba(59,105,57,.02));
+    border: 1px solid rgba(59,105,57,.18);
+    border-radius: 16px; padding: 22px 24px; margin-bottom: 16px;
+  }
+  .desk-main-icon {
+    width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+    background: #fff; border: 1px solid var(--border); color: var(--primary);
+    display: flex; align-items: center; justify-content: center; font-size: 23px;
+  }
+  .desk-main-body { flex: 1; min-width: 220px; }
+  .desk-main-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 3px; }
+  .desk-badge { font-size: 11px; font-weight: 500; color: var(--primary); background: rgba(59,105,57,.1); border-radius: 50px; padding: 2px 8px; }
+  .desk-main-meta { font-size: 12.5px; color: var(--text-sub); }
+  .desk-main-note { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+  .desk-main-action { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; flex-shrink: 0; }
+  .desk-main-action .btn-primary { padding: 10px 22px; }
+  .desk-main-link { font-size: 12px; color: var(--text-sub); transition: color .2s; }
+  .desk-main-link:hover { color: var(--primary); }
+  .btn-disabled {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: 11px 24px; border-radius: 50px; font-size: 14px; font-weight: 500;
+    background: #f3f4f6; color: var(--text-muted);
+    border: 1px dashed #d7dbdf; cursor: default;
+  }
+  .desk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  .desk-platform { background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; }
+  .desk-platform-head { display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 600; }
+  .desk-platform-head i { color: var(--primary); font-size: 16px; }
+  .desk-platform-note { font-size: 11.5px; color: var(--text-muted); margin: 3px 0 12px; }
+  .desk-arches { display: flex; flex-direction: column; gap: 8px; }
+  .desk-arch {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-radius: 10px;
+    background: var(--bg-alt); border: 1px solid transparent;
+  }
+  .desk-arch.current { background: rgba(59,105,57,.06); border-color: rgba(59,105,57,.28); }
+  .desk-arch-name { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+  .desk-arch-name em { font-size: 11px; font-style: normal; font-weight: 400; color: var(--text-muted); }
+  .desk-arch-name .cur { font-size: 12px; color: var(--primary); }
+  .desk-arch-action { margin-left: auto; }
+  .desk-arch-link { font-size: 12.5px; font-weight: 500; color: var(--primary); display: inline-flex; align-items: center; gap: 4px; }
+  .desk-arch-link:hover { color: var(--primary-hover); }
+  .desk-arch-state { font-size: 12px; color: var(--text-muted); }
+  .desk-foot { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 16px; }
+
   /* ===== CTA ===== */
   .cta { text-align: center; padding: 72px 24px; background: linear-gradient(135deg, rgba(59,105,57,.03), rgba(59,105,57,.07)); border-top: 1px solid var(--divider); }
   .cta h2 { font-size: clamp(20px, 2.5vw, 26px); font-weight: 700; margin-bottom: 8px; }
@@ -200,6 +248,9 @@
     .nav-links .nav-text { display: none; }
     .hero-actions { flex-direction: column; align-items: stretch; }
     .hero-actions a { justify-content: center; }
+    .desk-main-action { align-items: stretch; width: 100%; }
+    .desk-main-action .btn-primary, .desk-main-action .btn-secondary, .desk-main-action .btn-disabled { justify-content: center; }
+    .desk-main-link { text-align: center; }
   }
 
   /* ============ 全屏 Loading ============ */
@@ -237,6 +288,7 @@
       <span>墨伴</span>
     </a>
     <div class="nav-links">
+      <a class="nav-text" href="#desktop">桌面端</a>
       <a class="nav-text" href="#docs">书源、插件编写教程</a>
       <a class="nav-text" href="#features">核心功能</a>
       <a class="nav-text" href="#why">为什么选择</a>
@@ -276,6 +328,19 @@
     </div>
   </div>
 </div>
+
+<!-- 桌面端下载 -->
+<section class="section" id="desktop">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2>桌面端下载</h2>
+      <p>Windows / macOS / Linux 原生客户端 · 当前版本 <span id="deskVersion">1.3.0</span></p>
+    </div>
+    <div class="desk-main" id="deskMain"></div>
+    <div class="desk-grid" id="deskList"></div>
+    <p class="desk-foot">桌面端安装包随 GitHub Release 发布，标注「暂未提供」的平台当前尚无可用产物。</p>
+  </div>
+</section>
 
 <!-- 书源、插件编写教程 -->
 <section class="section section-alt" id="docs">
@@ -500,6 +565,115 @@ function formatSize(bytes) {
   return mb.toFixed(2) + ' MB';
 }
 
+/* ============ 桌面端下载 ============ */
+// 桌面端产物命名：MoBan-Reader-<tag>-<platform>-<arch>.<ext>
+const DESKTOP_VERSION_FALLBACK = '1.3.0';
+const DESKTOP_ASSET_RE = /^MoBan-Reader-(.+)-(windows|macos|linux)-(x64|arm64)\.(msi|dmg|deb)$/i;
+const DESKTOP_PLATFORMS = [
+  { key: 'windows', name: 'Windows', icon: 'fab fa-windows', ext: 'MSI', note: '适用于 Windows 10 及以上' },
+  { key: 'macos', name: 'macOS', icon: 'fab fa-apple', ext: 'DMG', note: 'Intel 芯片选 x64，Apple Silicon 选 ARM64' },
+  { key: 'linux', name: 'Linux', icon: 'fab fa-linux', ext: 'DEB', note: '适用于 Debian / Ubuntu 等发行版' },
+];
+const DESKTOP_ARCHES = [
+  { key: 'x64', name: 'x64' },
+  { key: 'arm64', name: 'ARM64' },
+];
+
+// undefined = 正在获取，null = 接口不可用，对象 = 已按 <platform>-<arch> 索引的资产
+let desktopAssets;
+let desktopVersion = DESKTOP_VERSION_FALLBACK;
+
+/** 按 UA 推断当前桌面系统与架构；手机或无法识别时返回 unknown，由页面给出默认推荐 */
+function detectDesktopTarget() {
+  const ua = navigator.userAgent;
+  const isIPad = /macintosh/i.test(ua) && (navigator.maxTouchPoints || 0) > 1;
+  if (isIPad || /iphone|ipad|ipod|android/i.test(ua)) return { os: 'windows', arch: 'x64', unknown: true };
+  if (/windows/i.test(ua)) return { os: 'windows', arch: /arm/i.test(ua) ? 'arm64' : 'x64' };
+  if (/macintosh|mac os x/i.test(ua)) return { os: 'macos', arch: 'arm64' };
+  if (/linux|x11/i.test(ua)) return { os: 'linux', arch: /aarch64|arm64/i.test(ua) ? 'arm64' : 'x64' };
+  return { os: 'windows', arch: 'x64', unknown: true };
+}
+
+function indexDesktopAssets(assets) {
+  const map = {};
+  (assets || []).forEach(a => {
+    const m = DESKTOP_ASSET_RE.exec(a.name);
+    if (m) map[m[2].toLowerCase() + '-' + m[3].toLowerCase()] = { url: a.browser_download_url, size: a.size };
+  });
+  return map;
+}
+
+/** 单个平台/架构入口：有产物给下载链接，确认没有则标注暂未提供，接口不可用时回落到 Release 页面 */
+function desktopLinkHtml(key) {
+  if (desktopAssets === undefined) return '<span class="desk-arch-state">获取中…</span>';
+  if (desktopAssets === null) return '<a class="desk-arch-link" href="' + GITHUB_RELEASES + '" target="_blank" rel="noopener">查看 Release</a>';
+  const asset = desktopAssets[key];
+  if (!asset) return '<span class="desk-arch-state">暂未提供</span>';
+  return '<a class="desk-arch-link" href="' + proxyUrl(asset.url) + '" target="_blank" rel="noopener">下载 <i class="fas fa-arrow-down"></i></a>';
+}
+
+function renderDesktop() {
+  const mainEl = document.getElementById('deskMain');
+  const listEl = document.getElementById('deskList');
+  const verEl = document.getElementById('deskVersion');
+  if (!mainEl || !listEl) return;
+
+  const target = detectDesktopTarget();
+  const platform = DESKTOP_PLATFORMS.find(p => p.key === target.os) || DESKTOP_PLATFORMS[0];
+  const archLabel = target.arch === 'arm64' ? 'ARM64' : 'x64';
+  const key = target.os + '-' + target.arch;
+  const asset = desktopAssets ? desktopAssets[key] : null;
+
+  if (verEl) verEl.textContent = desktopVersion;
+
+  const meta = [platform.ext + ' 安装包', '版本 v' + desktopVersion];
+  if (asset && asset.size) meta.push(formatSize(asset.size));
+  const notes = [];
+  if (target.unknown) notes.push('未识别到桌面系统，已按默认推荐；你也可以在下方选择对应平台。');
+  if (target.os === 'macos') notes.push('浏览器无法判断芯片型号，默认按 Apple Silicon 推荐，Intel 机型请选 x64。');
+
+  let actionHtml;
+  if (asset) {
+    actionHtml = '<a class="btn-primary" href="' + proxyUrl(asset.url) + '" target="_blank" rel="noopener"><i class="fas fa-download"></i> 下载 ' + platform.name + ' 版</a>'
+      + '<a class="desk-main-link" href="' + GITHUB_RELEASES + '" target="_blank" rel="noopener">GitHub Release</a>';
+  } else if (desktopAssets === null) {
+    actionHtml = '<a class="btn-secondary" href="' + GITHUB_RELEASES + '" target="_blank" rel="noopener"><i class="fab fa-github"></i> 前往 Release 查看</a>';
+  } else if (desktopAssets === undefined) {
+    actionHtml = '<span class="btn-disabled"><i class="fas fa-circle-notch fa-spin"></i> 获取安装包信息…</span>';
+  } else {
+    actionHtml = '<span class="btn-disabled"><i class="fas fa-hourglass-half"></i> 暂未提供</span>'
+      + '<a class="desk-main-link" href="' + GITHUB_RELEASES + '" target="_blank" rel="noopener">关注 GitHub Release</a>';
+  }
+
+  mainEl.innerHTML =
+    '<div class="desk-main-icon"><i class="' + platform.icon + '"></i></div>'
+    + '<div class="desk-main-body">'
+    + '<div class="desk-main-title">' + platform.name + ' · ' + archLabel
+    + '<span class="desk-badge">' + (target.unknown ? '默认推荐' : '当前系统') + '</span></div>'
+    + '<div class="desk-main-meta">' + meta.join(' · ') + '</div>'
+    + (notes.length ? '<div class="desk-main-note">' + notes.join(' ') + '</div>' : '')
+    + '</div>'
+    + '<div class="desk-main-action">' + actionHtml + '</div>';
+
+  listEl.innerHTML = DESKTOP_PLATFORMS.map(p => {
+    const rows = DESKTOP_ARCHES.map(a => {
+      const rowKey = p.key + '-' + a.key;
+      const current = rowKey === key;
+      return '<div class="desk-arch' + (current ? ' current' : '') + '">'
+        + '<span class="desk-arch-name">' + a.name
+        + (current ? ' <i class="fas fa-check-circle cur" title="当前系统"></i>' : '')
+        + ' <em>· ' + p.ext + '</em></span>'
+        + '<span class="desk-arch-action">' + desktopLinkHtml(rowKey) + '</span>'
+        + '</div>';
+    }).join('');
+    return '<div class="desk-platform">'
+      + '<div class="desk-platform-head"><i class="' + p.icon + '"></i>' + p.name + '</div>'
+      + '<div class="desk-platform-note">' + p.note + '</div>'
+      + '<div class="desk-arches">' + rows + '</div>'
+      + '</div>';
+  }).join('');
+}
+
 /** 设置下载入口：apkUrl 为空时回落到 Release 页面，保证按钮始终可点 */
 function setDownloadLinks(apkUrl, releaseUrl) {
   const href = apkUrl || proxyUrl(GITHUB_RELEASES);
@@ -552,13 +726,21 @@ async function loadVersion() {
       const sizeEl = document.getElementById('dlSize'); if (sizeEl) sizeEl.textContent = asset ? formatSize(asset.size) : '—';
       const dateEl = document.getElementById('dlDate'); if (dateEl) dateEl.textContent = (data.published_at || '').slice(0, 10) || '—';
       setDownloadLinks(proxyUrl(asset ? asset.browser_download_url : ''), data.html_url);
+      desktopAssets = indexDesktopAssets(data.assets);
+      // 只有该 Release 真的带了桌面端产物，标签才代表桌面端版本；否则沿用已知的桌面版本号
+      if (Object.keys(desktopAssets).length) {
+        desktopVersion = (data.tag_name || '').replace(/^v/i, '') || DESKTOP_VERSION_FALLBACK;
+      }
       const metaEl = document.getElementById('downloadMeta'); if (metaEl) metaEl.style.display = 'flex';
     } else {
+      desktopAssets = null;
       console.warn('所有 Release 接口均不可用，已回落到 Release 页面链接');
     }
   } catch (e) {
+    desktopAssets = null;
     console.warn('GitHub Release API 加载失败：', e);
   } finally {
+    renderDesktop();
     if (loader) {
       loader.classList.add('hiding');
       setTimeout(() => loader.remove(), 380);
@@ -577,6 +759,7 @@ function showUaTip() {
 }
 
 /* ============ 启动 ============ */
+renderDesktop();
 loadVersion();
 showUaTip();
 </script>
